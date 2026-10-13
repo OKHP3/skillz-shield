@@ -296,6 +296,38 @@ class NvidiaAdapterTests(unittest.TestCase):
         self.assertIn("analyzer_status", output["coverage"]["incomplete_reasons"])
         self.assertNotIn("SECRET-MARKER", json.dumps(output))
 
+    def test_v212_public_ledger_reasons_keep_findings_and_incomplete_verdict(self):
+        # NVIDIA's immutable v2.12.0 LedgerReason enum, independent of the adapter.
+        reasons = (
+            "analyzer_load_error", "semantic_runtime_incomplete",
+            "unsupported_primary_content", "reference_missing",
+            "excluded_executable_content", "transitive_child_scan_failed",
+        )
+        for reason in reasons:
+            for fatal in (False, True):
+                with self.subTest(reason=reason, fatal=fatal):
+                    report = successful_report()
+                    report["metadata"]["skillspector_version"] = "2.12.0"
+                    report["issues"] = [finding()]
+                    report["analysis_completeness"]["ledger_exceptions"] = [
+                        {"reason_code": reason, "fatal": fatal,
+                         "path": "SECRET-MARKER", "message": "SECRET-MARKER"},
+                    ]
+                    report["analysis_completeness"]["analyzer_statuses"][0]["reason_code"] = reason
+                    output = normalize(report, package=PACKAGE, engine={
+                        "version": "2.12.0",
+                        "revision": "c7958a3268d9498644b22edb75d0f051bbc8cbfc",
+                    })
+                    self.assertEqual(output["status"], "incomplete")
+                    self.assertFalse(output["coverage"]["complete"])
+                    self.assertEqual(output["coverage"]["ledger_reason_counts"], {reason: 1})
+                    self.assertEqual(output["coverage"]["analyzer_details"][0]["reason"], reason)
+                    self.assertEqual(output["coverage"]["ledger_fatal_count"], int(fatal))
+                    self.assertEqual("execution_failed" in output["errors"], fatal)
+                    self.assertIn("ledger_exceptions", output["coverage"]["incomplete_reasons"])
+                    self.assertEqual(output["findings"], [{"rule_id": "AST1", "severity": "high"}])
+                    self.assertNotIn("SECRET-MARKER", json.dumps(output))
+
     def test_incomplete_work_is_distinct_from_completed_file_counts(self):
         report = successful_report()
         report["analysis_completeness"]["analyzer_statuses"][0].update(completed=0, skipped=1)
