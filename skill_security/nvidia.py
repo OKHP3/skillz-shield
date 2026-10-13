@@ -4,6 +4,9 @@ Verified against v2.11.2, commit 69dcdfb74487d361ba4c811d088cfdea2ff3a9dc:
 https://github.com/NVIDIA/SkillSpector/blob/69dcdfb74487d361ba4c811d088cfdea2ff3a9dc/src/skillspector/nodes/report.py
 https://github.com/NVIDIA/SkillSpector/blob/69dcdfb74487d361ba4c811d088cfdea2ff3a9dc/src/skillspector/inspection_ledger.py
 
+Public ledger reasons also checked against v2.12.0, commit c7958a3268d9498644b22edb75d0f051bbc8cbfc:
+https://github.com/NVIDIA/SkillSpector/blob/c7958a3268d9498644b22edb75d0f051bbc8cbfc/src/skillspector/inspection_ledger.py
+
 Install the CLI only in its own tool environment (no MCP/development extras):
     uv tool install --python 3.13 \
       'skillspector @ git+https://github.com/NVIDIA/SkillSpector.git@69dcdfb74487d361ba4c811d088cfdea2ff3a9dc'
@@ -39,7 +42,7 @@ import re
 
 
 _MAX_RECORDS = 10_000
-# Public LedgerReason enum at the verified vendor revision above. Never publish
+# Public LedgerReason enum at the immutable vendor revisions above. Never publish
 # arbitrary reason strings, analyzer names, messages, paths, or source snippets.
 _LEDGER_REASONS = {
     "excluded_directory",
@@ -57,7 +60,9 @@ _LEDGER_REASONS = {
     "llm_structured_response_invalid",
     "llm_connection_retries_exhausted",
     "analyzer_runtime_error",
+    "analyzer_load_error",
     "unaccounted_work",
+    "semantic_runtime_incomplete",
     "finding_accounting_error",
     "disabled_by_configuration",
     "missing_credentials",
@@ -82,8 +87,10 @@ _LEDGER_REASONS = {
     "archive_time_limit",
     "vcs_metadata",
     "opaque_content",
+    "unsupported_primary_content",
     "referenced_uninspected",
     "reference_extraction_limit",
+    "reference_missing",
     "reference_unresolved",
     "manifest_parse_error",
     "manifest_parse_limit",
@@ -91,7 +98,9 @@ _LEDGER_REASONS = {
     "traversal_depth_limit",
     "total_bytes_limit",
     "runtime_limit",
+    "excluded_executable_content",
     "output_limit",
+    "transitive_child_scan_failed",
     "static_parse_limit",
     "obfuscated_instruction_text",
 }
