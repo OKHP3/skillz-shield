@@ -5,6 +5,10 @@ pins; release tags identify reviewed milestones and are not moved.
 
 ## Unreleased
 
+- Locate NVIDIA completeness-gap origins with allowlisted reason codes and known
+  staged file/line identities. Missing reference targets and arbitrary ledger
+  text remain excluded; incomplete coverage remains blocking.
+
 - Retain bounded finding file/line diagnostics matched to staged package files.
   Absolute paths, scanner prose, snippets and remote-source locations remain
   excluded. Findings, coverage and failure decisions are unchanged.

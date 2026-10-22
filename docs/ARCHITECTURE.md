@@ -87,6 +87,13 @@ does not change finding counts, coverage or verdicts. Missing locations are not
 evidence that a finding is false. The public site still consumes only aggregate
 allowlisted fields.
 
+NVIDIA results also include `coverage_diagnostics` with the same identity and
+line bounds. Each record contains only an already-allowlisted ledger reason and
+its known source file/line, never a missing reference target or ledger prose.
+Unavailable and truncated origins remain explicit. This enables review of
+example references versus missing bundled inputs without treating either as
+complete analysis or adding a suppression mechanism.
+
 Selected packages must use portable regular-file paths. Symlinks, submodules,
 unsafe paths, oversized files, and packages exceeding resource limits cannot
 produce a passing scan. Current staging limits are 10 MiB per file, 64 MiB per

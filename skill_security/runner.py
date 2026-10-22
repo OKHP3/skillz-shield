@@ -39,6 +39,8 @@ def scan_engine(name: str, executable: Path, package: str, staged: Path, work: P
         report = json.loads(report_path.read_text(encoding="utf-8"))
         normalized = ADAPTERS[name].normalize(report, package=package, engine={**pin, "expected_package_dir": str(staged)})
         normalized["finding_diagnostics"] = locations.diagnostics(name, report, normalized, known_files)
+        if name == "nvidia":
+            normalized["coverage_diagnostics"] = locations.coverage_diagnostics(report, normalized, known_files)
         if result.returncode == 1 and normalized["status"] == "no-findings":
             return incomplete(name, package, "exit-report-contradiction")
         return normalized
