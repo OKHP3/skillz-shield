@@ -1,0 +1,1 @@
+- [Hosting target](hosting-target.md) — keep Skillz Shield on GitHub Pages; do not publish it as a Replit-hosted application.
