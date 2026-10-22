@@ -10,6 +10,9 @@ pins; release tags identify reviewed milestones and are not moved.
   icons, social artwork, sitemap, and a Node 24 Replit preview workflow.
 - Keep analytics disabled unless a Shield-specific measurement ID is explicitly
   configured for a production build; do not reuse the Forge property.
+- Retain bounded finding file/line diagnostics matched to staged package files.
+  Absolute paths, scanner prose, snippets and remote-source locations remain
+  excluded. Findings, coverage and failure decisions are unchanged.
 
 - Preserve six additional public NVIDIA v2.12.0 ledger reason codes in sanitized
   coverage diagnostics. Incomplete verdicts, findings, fatal errors, and

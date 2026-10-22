@@ -77,6 +77,16 @@ treated as skills. Uncommitted and untracked files are never part of scan input.
 
 ## Staging and scanner execution
 
+Each engine result includes optional `finding_diagnostics`: relative package
+file names and line numbers for accepted rules, plus unavailable and truncation
+indicators. The runner snapshots known staged files before invoking the scanner;
+locations must match those identities and fall within their line counts. It
+never opens scanner-supplied paths. Absolute paths, messages, snippets, unknown
+files and transitive-source identities are not published. This additive evidence
+does not change finding counts, coverage or verdicts. Missing locations are not
+evidence that a finding is false. The public site still consumes only aggregate
+allowlisted fields.
+
 Selected packages must use portable regular-file paths. Symlinks, submodules,
 unsafe paths, oversized files, and packages exceeding resource limits cannot
 produce a passing scan. Current staging limits are 10 MiB per file, 64 MiB per
