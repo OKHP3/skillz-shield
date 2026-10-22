@@ -9,6 +9,11 @@ pins; release tags identify reviewed milestones and are not moved.
   staged file/line identities. Missing reference targets and arbitrary ledger
   text remain excluded; incomplete coverage remains blocking.
 
+- Reconcile the unpublished Replit site work with current dependencies and scanner
+  fixes while retaining both commit histories. Add page-specific sharing metadata,
+  icons, social artwork, sitemap, and a Node 24 Replit preview workflow.
+- Keep analytics disabled unless a Shield-specific measurement ID is explicitly
+  configured for a production build; do not reuse the Forge property.
 - Retain bounded finding file/line diagnostics matched to staged package files.
   Absolute paths, scanner prose, snippets and remote-source locations remain
   excluded. Findings, coverage and failure decisions are unchanged.

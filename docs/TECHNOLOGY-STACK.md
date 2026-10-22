@@ -9,6 +9,15 @@ platform binaries. Its [JSON companion](technology/technology-versions.json) ret
 the source URL, observation time, scope and location for each entry. These are
 source declarations and historical evidence, not an installed-software attestation.
 
+Reconciliation update (2026-10-22): the tables and linked snapshots below retain
+the original audit baseline. The current `.replit` now selects `nodejs-24`,
+replacing the Node 20 declaration, and defines a local site preview workflow.
+Current package pins are in `site/package-lock.json`; scheduled freshness reports
+compare those committed pins with upstream releases. The site also supports an
+optional vendor-hosted GA4 script with no immutable package version. It remains
+disabled unless a Shield-specific `VITE_GA_MEASUREMENT_ID` is explicitly supplied
+for a production build.
+
 ## Primary technologies
 
 | Technology | In-place declaration | Stable release checked | Adoption route |
