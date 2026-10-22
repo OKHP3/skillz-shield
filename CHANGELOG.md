@@ -5,6 +5,10 @@ pins; release tags identify reviewed milestones and are not moved.
 
 ## Unreleased
 
+- Add bounded whole-ZIP package staging and an operator scan CLI with JSON and
+  standalone HTML reports, safe locations and reviewed rule guidance. Drafts
+  remain eligible. Public authenticated upload hosting is still pending.
+
 - Retain bounded finding file/line diagnostics matched to staged package files.
   Absolute paths, scanner prose, snippets and remote-source locations remain
   excluded. Findings, coverage and failure decisions are unchanged.

@@ -18,6 +18,10 @@ scan verdict so findings are published rather than hidden by a failed scan job.
 
 ## Follow-up opportunities
 
+Whole-package ZIP scanning is available through the [operator CLI](PACKAGE-SUBMISSION.md).
+The requested public upload-to-result experience remains unfinished until an
+authenticated service and isolated worker host are configured and verified.
+
 - Investigate the recorded incomplete coverage and findings in the Skillz
   inventory. Neither scanner integration tests nor the website establish that
   the library has a clean security result.
