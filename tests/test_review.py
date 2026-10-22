@@ -35,7 +35,7 @@ class ExactReviewTests(unittest.TestCase):
                          "analyzer_details": [{"status": "completed", "partial": 0, "skipped": 0,
                                                "failed": 0, "unaccounted": 0}]},
             "coverage_diagnostics": {"locations": [{"reason_code": "reference_missing",
-                                                    "file": "SKILL.md", "line": 23}],
+                                                    "file": "SKILL.md", "line": 23, "occurrences": 1}],
                                      "unavailable": 0, "truncated": False},
         }
         self.report = {
@@ -53,7 +53,7 @@ class ExactReviewTests(unittest.TestCase):
             "findings": [{"engine": "cisco", "rule_id": "YARA_sql_injection_generic",
                           "severity": "critical", "file": "scripts/reconcile.py", "line": 90}],
             "coverage_gaps": [{"engine": "nvidia", "reason_code": "reference_missing",
-                               "file": "SKILL.md", "line": 23}],
+                               "file": "SKILL.md", "line": 23, "occurrences": 1}],
         }]}
 
     def decision(self, report=None, ledger=None):
@@ -97,6 +97,37 @@ class ExactReviewTests(unittest.TestCase):
         report = copy.deepcopy(self.report)
         report["packages"][0]["engines"][1]["coverage"]["ledger_reason_counts"] = {"read_error": 1}
         self.assertEqual(self.decision(report=report), "review-required")
+
+    def test_nvidia_deduplicated_rule_with_two_locations_requires_both(self):
+        report = copy.deepcopy(self.report)
+        ledger = copy.deepcopy(self.ledger)
+        engine = report["packages"][0]["engines"][1]
+        engine["findings"] = [{"rule_id": "AE1", "severity": "high"}]
+        engine["finding_diagnostics"]["locations"] = [
+            {"rule_id": "AE1", "severity": "high", "file": "SKILL.md", "line": 8},
+            {"rule_id": "AE1", "severity": "high", "file": "SKILL.md", "line": 12},
+        ]
+        report["high_or_critical_findings"] = 2
+        ledger["reviews"][0]["findings"].extend({"engine": "nvidia", **row}
+                                                 for row in engine["finding_diagnostics"]["locations"])
+        self.assertEqual(self.decision(report=report, ledger=ledger), "reviewed-limitation")
+        ledger["reviews"][0]["findings"].pop()
+        self.assertEqual(self.decision(report=report, ledger=ledger), "review-required")
+
+    def test_same_line_reference_multiplicity_is_exact(self):
+        report = copy.deepcopy(self.report)
+        ledger = copy.deepcopy(self.ledger)
+        engine = report["packages"][0]["engines"][1]
+        coverage = engine["coverage"]
+        coverage["ledger_exception_count"] = 2
+        coverage["ledger_reason_counts"] = {"reference_missing": 2}
+        engine["coverage_diagnostics"]["locations"][0]["occurrences"] = 2
+        ledger["reviews"][0]["coverage_gaps"][0]["occurrences"] = 2
+        self.assertEqual(self.decision(report=report, ledger=ledger), "reviewed-limitation")
+        for bad in (1, None, True):
+            bad_ledger = copy.deepcopy(ledger)
+            bad_ledger["reviews"][0]["coverage_gaps"][0]["occurrences"] = bad
+            self.assertEqual(self.decision(report=report, ledger=bad_ledger), "review-required")
 
     def test_all_blocked_packages_must_be_reviewed(self):
         report = copy.deepcopy(self.report)

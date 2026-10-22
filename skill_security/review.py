@@ -24,11 +24,16 @@ def _finding_rows(engine):
     findings = [f for f in engine.get("findings", []) if f.get("severity") in _BLOCKING]
     locations = [f for f in engine.get("finding_diagnostics", {}).get("locations", [])
                  if f.get("severity") in _BLOCKING]
-    if (len(findings) != len(locations) or engine.get("finding_diagnostics", {}).get("unavailable")
+    if (engine.get("finding_diagnostics", {}).get("unavailable")
             or engine.get("finding_diagnostics", {}).get("truncated")):
         return None
-    if Counter((f.get("rule_id"), f.get("severity")) for f in findings) != Counter(
-            (f.get("rule_id"), f.get("severity")) for f in locations):
+    normalized = Counter((f.get("rule_id"), f.get("severity")) for f in findings)
+    located = Counter((f.get("rule_id"), f.get("severity")) for f in locations)
+    if engine["engine"] == "nvidia":
+        matches = set(normalized) == set(located)
+    else:
+        matches = normalized == located
+    if not matches:
         return None
     rows = []
     for row in locations:
@@ -69,32 +74,48 @@ def _coverage_rows(engine):
     diagnostics = engine.get("coverage_diagnostics", {})
     locations = diagnostics.get("locations", [])
     if (diagnostics.get("unavailable") or diagnostics.get("truncated")
-            or len(locations) != coverage.get("ledger_exception_count")
-            or len(locations) != sum(reasons.values())):
+            or not isinstance(locations, list)):
         return None
-    rows = []
+    rows = Counter()
     for row in locations:
+        if not isinstance(row, dict):
+            return None
         reason = row.get("reason_code")
+        occurrences = row.get("occurrences")
         if (reason not in _REVIEWABLE_NVIDIA_REASONS
                 or not _PATH.fullmatch(str(row.get("file", "")))
-                or not isinstance(row.get("line"), int) or row["line"] < 1):
+                or type(row.get("line")) is not int or row["line"] < 1
+                or type(occurrences) is not int or occurrences < 1):
             return None
-        rows.append((engine["engine"], reason, row["file"], row["line"]))
-    if Counter(row[1] for row in rows) != Counter(reasons):
+        rows[(engine["engine"], reason, row["file"], row["line"])] += occurrences
+    if sum(rows.values()) != coverage.get("ledger_exception_count") or sum(rows.values()) != sum(reasons.values()):
         return None
-    return Counter(rows)
+    if Counter({reason: sum(count for row, count in rows.items() if row[1] == reason)
+                for reason in reasons}) != Counter(reasons):
+        return None
+    return rows
 
 
-def _ledger_rows(rows, fields):
+def _ledger_rows(rows, fields, counted=False):
     if not isinstance(rows, list):
         return None
     try:
         values = [tuple(row[field] for field in fields) for row in rows]
     except (KeyError, TypeError):
         return None
-    if any(not isinstance(value[-1], int) or value[-1] < 1 for value in values):
+    if any(type(value[-1]) is not int or value[-1] < 1 for value in values):
         return None
-    return Counter(values)
+    if not counted:
+        return Counter(values)
+    result = Counter()
+    for row, value in zip(rows, values):
+        if not isinstance(row, dict):
+            return None
+        count = row.get("occurrences")
+        if type(count) is not int or count < 1:
+            return None
+        result[value] += count
+    return result
 
 
 def evaluate(report, ledger, today=None):
@@ -152,7 +173,7 @@ def evaluate(report, ledger, today=None):
             coverage += one_coverage
         if findings != _ledger_rows(record.get("findings"), ("engine", "rule_id", "severity", "file", "line")):
             return denied
-        if coverage != _ledger_rows(record.get("coverage_gaps"), ("engine", "reason_code", "file", "line")):
+        if coverage != _ledger_rows(record.get("coverage_gaps"), ("engine", "reason_code", "file", "line"), counted=True):
             return denied
         reviewed += 1
     if (not reviewed or report.get("expected_packages") != len(report.get("packages", []))
