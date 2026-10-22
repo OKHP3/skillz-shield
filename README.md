@@ -141,6 +141,18 @@ separate deployment requirement.
 or installation may stop before a report exists; that is not a passing scan.
 Whether a failing job blocks merging is the consuming repository's decision.
 
+The optional `review` action mode is a **separate** exact-content merge-policy
+check for manually reviewed scanner limitations. It never edits `report.json`,
+changes vendor severities, or reports a scan pass. On pull requests it reads
+`.github/skill-security-reviews.json` from the PR's **base commit**, so the PR
+cannot approve itself. Each record expires within 90 days and binds the exact
+package SHA-256, vendor fingerprint, located high/critical findings, and
+located NVIDIA `reference_missing` exceptions. Only fully inspected packages
+with no other analysis gaps can receive this review outcome. Protect changes
+to the review ledger and the consuming workflow through repository review
+policy. See [architecture](docs/ARCHITECTURE.md) for the record format and
+fail-closed conditions.
+
 Reports identify the source commit, package content digest, scanner versions and
 immutable artifacts, public rule IDs, severities, and coverage. They omit raw
 skill snippets and scanner diagnostics. **No result certifies that a skill is

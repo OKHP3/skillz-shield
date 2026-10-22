@@ -6,7 +6,7 @@ branding:
   color: orange
 inputs:
   mode:
-    description: plan, resolve, install, or scan
+    description: plan, resolve, install, scan, or review
     required: true
   root:
     description: Checked-out skill repository
@@ -42,6 +42,9 @@ outputs:
   decision:
     description: pass, review-required, or incomplete
     value: ${{ steps.run.outputs.decision }}
+  review_decision:
+    description: Separate exact-content review outcome; never changes the raw scan decision
+    value: ${{ steps.run.outputs.review_decision }}
 runs:
   using: composite
   steps:
