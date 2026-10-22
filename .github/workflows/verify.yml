@@ -51,6 +51,10 @@ jobs:
         env:
           STATE_PATH: ${{ runner.temp }}/security-state
         run: python tests/live_smoke.py --state "$STATE_PATH"
+      - name: Exercise whole ZIP packages and readable results
+        env:
+          STATE_PATH: ${{ runner.temp }}/security-state
+        run: python tests/live_zip_smoke.py --state "$STATE_PATH"
       - name: Check out immutable public diagnostic inputs
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -69,5 +73,6 @@ jobs:
           path: |
             ${{ runner.temp }}/security-state/pins.json
             ${{ runner.temp }}/security-state/smoke-report.json
+            ${{ runner.temp }}/security-state/zip-smoke-report.json
             ${{ runner.temp }}/security-state/inventory-probe.json
           retention-days: 30

@@ -121,6 +121,14 @@ as the complete integration example. The action itself does not schedule jobs or
 change repository protection settings. If Actions are restricted, allow Shield
 and the pinned actions used by its [action definition](action.yml) and your caller.
 
+## Scan a whole ZIP package
+
+The operator CLI can scan a skill ZIP with its supporting files and produce
+downloadable JSON and standalone HTML results, including available file/line
+evidence and reviewed remediation guidance. See [Whole-package scanning](docs/PACKAGE-SUBMISSION.md).
+The public Pages site does not yet accept uploads; public job hosting remains a
+separate deployment requirement.
+
 ## Read the result
 
 | Decision | Meaning |

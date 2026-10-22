@@ -5,6 +5,10 @@ pins; release tags identify reviewed milestones and are not moved.
 
 ## Unreleased
 
+- Add bounded whole-ZIP package staging and an operator scan CLI with JSON and
+  standalone HTML reports, safe locations and reviewed rule guidance. Drafts
+  remain eligible. Public authenticated upload hosting is still pending.
+
 - Locate NVIDIA completeness-gap origins with allowlisted reason codes and known
   staged file/line identities. Missing reference targets and arbitrary ledger
   text remain excluded; incomplete coverage remains blocking.
