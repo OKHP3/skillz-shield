@@ -5,6 +5,11 @@ pins; release tags identify reviewed milestones and are not moved.
 
 ## Unreleased
 
+- Add a separate exact-content, expiring review policy for located scanner
+  false positives and fully inspected NVIDIA reference-resolution limitations.
+  PRs read approvals only from their base commit; raw scan reports and vendor
+  decisions remain unchanged and visible.
+
 - Add bounded whole-ZIP package staging and an operator scan CLI with JSON and
   standalone HTML reports, safe locations and reviewed rule guidance. Drafts
   remain eligible. Public authenticated upload hosting is still pending.

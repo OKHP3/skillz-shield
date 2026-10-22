@@ -156,6 +156,42 @@ Incomplete evidence takes precedence over findings in the aggregate decision.
 With complete evidence, high or critical findings produce `review-required`;
 otherwise the decision is `pass`. Lower-severity findings remain visible.
 
+## Separate exact-content review policy
+
+`review` mode reads the unchanged `plan.json` and `report.json`. On a pull
+request it reads `.github/skill-security-reviews.json` from the **base commit**,
+not the proposed head. The consumer must pass the PR base SHA via `base` and
+protect the review ledger and workflow from unreviewed changes. On a main-branch
+run, it reads the ledger at the scanned commit. The separate `review.json` and
+`review_decision` output can be `raw-pass`, `reviewed-limitation`, or
+`review-required`. `reviewed-limitation` describes an exact human review; it
+does not change the vendor report's `incomplete` or `review-required` decision.
+
+A review record has this shape (all values shown are illustrative):
+
+```json
+{"schema":1,"reviews":[{
+  "package":"community/example",
+  "content_sha256":"<64 lowercase hex characters>",
+  "toolchain_fingerprint":"<64 lowercase hex characters>",
+  "expires":"2026-11-21",
+  "reviewer":"repository owner",
+  "rationale":"Specific source-backed explanation of each reviewed scanner limitation.",
+  "findings":[{"engine":"cisco","rule_id":"EXAMPLE_RULE","severity":"critical","file":"scripts/example.py","line":90}],
+  "coverage_gaps":[{"engine":"nvidia","reason_code":"reference_missing","file":"SKILL.md","line":23}]
+}]}
+```
+
+The reviewer must inspect the source, not just copy the report. The action
+matches all located high/critical findings and all located NVIDIA
+`reference_missing` exceptions exactly, including multiplicity. A changed
+package digest, vendor fingerprint, rule, severity, file, line, new finding,
+expired record, unlocated finding, truncated diagnostics, failed analyzer,
+uninspected file, other completeness reason, or missing review leaves the
+policy check failing. Expiry is at most 90 days from the run. Raw reports and
+scanner steps remain visible; review records must never be presented as a
+general security clearance.
+
 This measures the requested static checks at one revision with one recorded
 toolchain. It does not establish runtime behavior, exhaustive vulnerability
 coverage, skill quality, or a safety certification. A smoke fixture that passes

@@ -24,7 +24,7 @@ def output(key: str, value: str) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("mode", choices=("plan", "resolve", "install", "scan"))
+    parser.add_argument("mode", choices=("plan", "resolve", "install", "scan", "review"))
     parser.add_argument("--root", type=Path, default=Path.cwd())
     parser.add_argument("--state", type=Path, required=True)
     parser.add_argument("--base", default="")
@@ -75,6 +75,33 @@ def main() -> int:
             installed[name] = version
         write(state / "installed.json", installed)
         print("Installed both engines using verified wheels and vendor-locked dependencies.")
+    elif args.mode == "review":
+        from skill_security import review, staging
+        plan = json.loads((state / "plan.json").read_text(encoding="utf-8"))
+        report = json.loads((state / "report.json").read_text(encoding="utf-8"))
+        if (report.get("source_commit") != plan.get("source_commit")
+                or report.get("expected_packages") != len(plan.get("packages", []))
+                or [p.get("package") for p in report.get("packages", [])] != plan.get("packages")):
+            raise ValueError("review-plan-mismatch")
+        # For PRs, only the protected base revision can grant a review. A PR
+        # cannot approve its own new findings by editing the ledger it submits.
+        revision = discovery._revision(args.root, args.base or plan["source_commit"])
+        try:
+            raw = staging.git(args.root, "show", f"{revision}:.github/skill-security-reviews.json", limit=256 * 1024)
+            ledger = json.loads(raw)
+        except ValueError:
+            ledger = {"schema": 1, "reviews": []}
+        result = review.evaluate(report, ledger)
+        write(state / "review.json", result)
+        output("review_decision", result["decision"])
+        summary = (f"Skillz Shield separate review: **{result['decision']}**. "
+                   f"Exact-content reviews matched: {result['reviewed_packages']}. "
+                   f"Raw vendor scan remains **{report['decision']}**; reviewed limitations do not certify safety.\n")
+        if os.environ.get("GITHUB_STEP_SUMMARY"):
+            with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as stream:
+                stream.write(summary)
+        print(summary)
+        return 0 if result["decision"] in {"raw-pass", "reviewed-limitation"} else 1
     else:
         from skill_security.runner import run
         plan = json.loads((state / "plan.json").read_text())
