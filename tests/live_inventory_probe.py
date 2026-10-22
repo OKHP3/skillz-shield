@@ -1,4 +1,4 @@
-"""Diagnostic-only scan of two fixed, committed public Skillz packages.
+"""Diagnostic-only scan of fixed, committed public Skillz packages.
 
 This preserves known findings/incomplete decisions; it is not a passing security
 gate. Submitted files are read by the runner, never imported or executed.
@@ -26,7 +26,8 @@ def main():
     head = subprocess.run(["git", "rev-parse", "--verify", "HEAD"], cwd=repository,
                           capture_output=True, text=True, check=True, timeout=30).stdout.strip()
     plan = discovery.plan(repository, None, head, full=True)
-    packages = [".agents/skills/architecture-decision-records", ".agents/skills/catalog-integrity"]
+    packages = [".agents/skills/architecture-decision-records", ".agents/skills/catalog-integrity",
+                "community/mcp-builder", "mermaid/okhp3-mermaid-publish"]
     if not set(packages).issubset(plan["packages"]):
         raise ValueError("expected diagnostic package missing")
     plan.update(packages=packages, scope="changed")

@@ -7,7 +7,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 
-from . import cisco, nvidia
+from . import cisco, nvidia, locations
 from .staging import stage
 
 ADAPTERS = {"cisco": cisco, "nvidia": nvidia}
@@ -26,6 +26,7 @@ def scan_engine(name: str, executable: Path, package: str, staged: Path, work: P
                LANG="C.UTF-8", PYTHONUTF8="1", PYTHONNOUSERSITE="1", DO_NOT_TRACK="1",
                SKILLSPECTOR_OSV_TIMEOUT="20", SKILLSPECTOR_MAX_WORKFLOW_SECONDS="150")
     try:
+        known_files = locations.inventory(staged)
         # Submitted instructions and scanner diagnostics never become CI log commands.
         with (work / f"{name}.log").open("wb") as output:
             result = subprocess.run(ADAPTERS[name].command(str(executable), str(staged), str(report_path)),
@@ -37,6 +38,7 @@ def scan_engine(name: str, executable: Path, package: str, staged: Path, work: P
             return incomplete(name, package, "missing-or-oversized-report")
         report = json.loads(report_path.read_text(encoding="utf-8"))
         normalized = ADAPTERS[name].normalize(report, package=package, engine={**pin, "expected_package_dir": str(staged)})
+        normalized["finding_diagnostics"] = locations.diagnostics(name, report, normalized, known_files)
         if result.returncode == 1 and normalized["status"] == "no-findings":
             return incomplete(name, package, "exit-report-contradiction")
         return normalized
