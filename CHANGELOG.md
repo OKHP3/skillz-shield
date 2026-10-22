@@ -5,6 +5,14 @@ pins; release tags identify reviewed milestones and are not moved.
 
 ## Unreleased
 
+- Preserve six additional public NVIDIA v2.12.0 ledger reason codes in sanitized
+  coverage diagnostics. Incomplete verdicts, findings, fatal errors, and
+  redaction of arbitrary vendor text remain unchanged.
+
+- Add a source-backed technology inventory, read-only weekly release comparison,
+  and reviewed update procedure covering npm, runtimes, Actions and scanner pins.
+  Keep missing environment evidence and historical scanner observations explicit.
+
 - Update the site to React 19.3, Vite 8, and TypeScript 7 together, with matching
   React types and plugin. Update the pinned uv, artifact, and Pages actions;
   scanner input/output and evidence verdict contracts remain unchanged.
