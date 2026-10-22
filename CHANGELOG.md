@@ -5,6 +5,10 @@ pins; release tags identify reviewed milestones and are not moved.
 
 ## Unreleased
 
+- Retain bounded finding file/line diagnostics matched to staged package files.
+  Absolute paths, scanner prose, snippets and remote-source locations remain
+  excluded. Findings, coverage and failure decisions are unchanged.
+
 - Preserve six additional public NVIDIA v2.12.0 ledger reason codes in sanitized
   coverage diagnostics. Incomplete verdicts, findings, fatal errors, and
   redaction of arbitrary vendor text remain unchanged.

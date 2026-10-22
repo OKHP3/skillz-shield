@@ -55,7 +55,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: OKHP3/skillz
-          ref: 6d12576032018a6cbe275751e62ce039a765b9d7
+          ref: 7830bbfd5c08803589ed09d39197d5edfabe0c95
           path: diagnostic-input
           persist-credentials: false
       - name: Record representative inventory diagnostics without claiming a pass
