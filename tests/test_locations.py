@@ -73,7 +73,8 @@ class LocationTests(unittest.TestCase):
                "message": "PRIVATE-SENTINEL", "target_path": "PRIVATE-SENTINEL"}
         report = {"analysis_completeness": {"ledger_exceptions": [row, row]}}
         output = locations.coverage_diagnostics(report, self.normalized, self.files)
-        self.assertEqual(output["locations"], [{"reason_code": "reference_missing", "file": "SKILL.md", "line": 2}])
+        self.assertEqual(output["locations"], [{"reason_code": "reference_missing", "file": "SKILL.md", "line": 2,
+                                                "occurrences": 2}])
         self.assertNotIn("PRIVATE-SENTINEL", json.dumps(output))
         self.assertEqual(self.normalized, before)
 
@@ -98,6 +99,7 @@ class LocationTests(unittest.TestCase):
             {"reason_code": "reference_missing", "path": "SKILL.md", "start_line": 1}] * 1001}}
         output = locations.coverage_diagnostics(report, self.normalized, self.files)
         self.assertEqual(len(output["locations"]), 1)
+        self.assertEqual(output["locations"][0]["occurrences"], 1000)
         self.assertTrue(output["truncated"])
 
 

@@ -94,7 +94,7 @@ def coverage_diagnostics(report: dict, normalized: dict, files: dict) -> dict:
     if not isinstance(rows, list):
         return output
     reasons = set(coverage.get("ledger_reason_counts", {})) - {"unknown"}
-    seen = set()
+    seen = {}
     for row in rows[:_LIMIT]:
         if not isinstance(row, dict):
             output["unavailable"] += 1
@@ -107,8 +107,11 @@ def coverage_diagnostics(report: dict, normalized: dict, files: dict) -> dict:
             output["unavailable"] += 1
             continue
         key = (reason, item[0], line)
-        if key not in seen:
-            seen.add(key)
-            output["locations"].append(dict(zip(("reason_code", "file", "line"), key)))
+        if key in seen:
+            output["locations"][seen[key]]["occurrences"] += 1
+        else:
+            seen[key] = len(output["locations"])
+            output["locations"].append({**dict(zip(("reason_code", "file", "line"), key)),
+                                        "occurrences": 1})
     output["truncated"] = len(rows) > _LIMIT
     return output

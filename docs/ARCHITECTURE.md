@@ -178,13 +178,14 @@ A review record has this shape (all values shown are illustrative):
   "reviewer":"repository owner",
   "rationale":"Specific source-backed explanation of each reviewed scanner limitation.",
   "findings":[{"engine":"cisco","rule_id":"EXAMPLE_RULE","severity":"critical","file":"scripts/example.py","line":90}],
-  "coverage_gaps":[{"engine":"nvidia","reason_code":"reference_missing","file":"SKILL.md","line":23}]
+  "coverage_gaps":[{"engine":"nvidia","reason_code":"reference_missing","file":"SKILL.md","line":23,"occurrences":1}]
 }]}
 ```
 
 The reviewer must inspect the source, not just copy the report. The action
 matches all located high/critical findings and all located NVIDIA
-`reference_missing` exceptions exactly, including multiplicity. A changed
+`reference_missing` exceptions exactly, including a sanitized occurrence count
+when multiple reference exceptions share one line. A changed
 package digest, vendor fingerprint, rule, severity, file, line, new finding,
 expired record, unlocated finding, truncated diagnostics, failed analyzer,
 uninspected file, other completeness reason, or missing review leaves the

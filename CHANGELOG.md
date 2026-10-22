@@ -5,6 +5,10 @@ pins; release tags identify reviewed milestones and are not moved.
 
 ## Unreleased
 
+- Preserve same-line NVIDIA reference-exception occurrence counts for exact
+  review records, and handle normalized NVIDIA rules that have several finding
+  locations. Missing or changed evidence remains review-blocking.
+
 - Add a separate exact-content, expiring review policy for located scanner
   false positives and fully inspected NVIDIA reference-resolution limitations.
   PRs read approvals only from their base commit; raw scan reports and vendor
