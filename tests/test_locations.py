@@ -66,6 +66,40 @@ class LocationTests(unittest.TestCase):
         # An adapter rejecting the report cannot grant any source binding.
         self.assertEqual(locations.diagnostics("nvidia", None, {"coverage": {}}, self.files)["locations"], [])
 
+    def test_ledger_origin_preserves_reason_without_target_or_prose(self):
+        self.normalized["coverage"]["ledger_reason_counts"] = {"reference_missing": 1}
+        before = copy.deepcopy(self.normalized)
+        row = {"reason_code": "reference_missing", "path": "SKILL.md", "start_line": 2,
+               "message": "PRIVATE-SENTINEL", "target_path": "PRIVATE-SENTINEL"}
+        report = {"analysis_completeness": {"ledger_exceptions": [row, row]}}
+        output = locations.coverage_diagnostics(report, self.normalized, self.files)
+        self.assertEqual(output["locations"], [{"reason_code": "reference_missing", "file": "SKILL.md", "line": 2}])
+        self.assertNotIn("PRIVATE-SENTINEL", json.dumps(output))
+        self.assertEqual(self.normalized, before)
+
+    def test_ledger_invalid_unbound_external_and_unallowlisted_origins_are_unavailable(self):
+        self.normalized["coverage"]["ledger_reason_counts"] = {"reference_missing": 1, "unknown": 1}
+        base = {"reason_code": "reference_missing", "path": "SKILL.md", "start_line": 1}
+        for change in ({"reason_code": "PRIVATE-SENTINEL"}, {"reason_code": []}, {"reason_code": "unknown"},
+                       {"path": "../SKILL.md"}, {"start_line": True}, {"start_line": 3},
+                       {"source_identity": "remote"}, {"path": "/etc/passwd"}):
+            with self.subTest(change=change):
+                report = {"analysis_completeness": {"ledger_exceptions": [{**base, **change}]}}
+                output = locations.coverage_diagnostics(report, self.normalized, self.files)
+                self.assertEqual(output["locations"], [])
+                self.assertEqual(output["unavailable"], 1)
+        for report in ({}, {"analysis_completeness": None}, {"analysis_completeness": {"ledger_exceptions": {}}}):
+            self.assertEqual(locations.coverage_diagnostics(report, self.normalized, self.files)["locations"], [])
+        self.assertEqual(locations.coverage_diagnostics(None, {"coverage": {}}, self.files)["locations"], [])
+
+    def test_ledger_output_is_bounded(self):
+        self.normalized["coverage"]["ledger_reason_counts"] = {"reference_missing": 1001}
+        report = {"analysis_completeness": {"ledger_exceptions": [
+            {"reason_code": "reference_missing", "path": "SKILL.md", "start_line": 1}] * 1001}}
+        output = locations.coverage_diagnostics(report, self.normalized, self.files)
+        self.assertEqual(len(output["locations"]), 1)
+        self.assertTrue(output["truncated"])
+
 
 if __name__ == "__main__":
     unittest.main()

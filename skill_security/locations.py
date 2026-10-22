@@ -74,3 +74,41 @@ def diagnostics(name: str, report: dict, normalized: dict, files: dict) -> dict:
                 seen.add(key)
                 output["locations"].append(dict(zip(("rule_id", "severity", "file", "line"), key)))
     return output
+
+
+def coverage_diagnostics(report: dict, normalized: dict, files: dict) -> dict:
+    """Locate known NVIDIA ledger reasons at their bundled source origins.
+
+    The vendor's build_context reference_resolution events use the primary
+    source path and reference line. Never retain reference targets or messages.
+    Reason codes must already exist in the normalized allowlisted counters.
+    """
+    output = {"locations": [], "unavailable": 0, "truncated": False}
+    coverage = normalized.get("coverage", {})
+    if not coverage.get("package_path_bound"):
+        return output
+    completeness = report.get("analysis_completeness")
+    if not isinstance(completeness, dict):
+        return output
+    rows = completeness.get("ledger_exceptions")
+    if not isinstance(rows, list):
+        return output
+    reasons = set(coverage.get("ledger_reason_counts", {})) - {"unknown"}
+    seen = set()
+    for row in rows[:_LIMIT]:
+        if not isinstance(row, dict):
+            output["unavailable"] += 1
+            continue
+        reason, path, line = row.get("reason_code"), row.get("path"), row.get("start_line")
+        item = files.get(path.replace("\\", "/")) if isinstance(path, str) else None
+        if (not isinstance(reason, str) or reason not in reasons or item is None
+                or type(line) is not int or not 1 <= line <= item[1]
+                or any(row.get(key) for key in ("source_identity", "source_digest", "source_url", "transitive_depth"))):
+            output["unavailable"] += 1
+            continue
+        key = (reason, item[0], line)
+        if key not in seen:
+            seen.add(key)
+            output["locations"].append(dict(zip(("reason_code", "file", "line"), key)))
+    output["truncated"] = len(rows) > _LIMIT
+    return output

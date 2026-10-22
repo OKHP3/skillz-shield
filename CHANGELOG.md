@@ -5,6 +5,10 @@ pins; release tags identify reviewed milestones and are not moved.
 
 ## Unreleased
 
+- Locate NVIDIA completeness-gap origins with allowlisted reason codes and known
+  staged file/line identities. Missing reference targets and arbitrary ledger
+  text remain excluded; incomplete coverage remains blocking.
+
 - Reconcile the unpublished Replit site work with current dependencies and scanner
   fixes while retaining both commit histories. Add page-specific sharing metadata,
   icons, social artwork, sitemap, and a Node 24 Replit preview workflow.
