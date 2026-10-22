@@ -7,8 +7,12 @@ declare global {
   }
 }
 
+export function isAnalyticsConfigured(measurementId: string | undefined): measurementId is string {
+  return typeof measurementId === 'string' && /^G-[A-Z0-9]+$/.test(measurementId);
+}
+
 export function initializeAnalytics(measurementId: string | undefined) {
-  if (!measurementId || !/^G-[A-Z0-9]+$/.test(measurementId)) return;
+  if (!isAnalyticsConfigured(measurementId)) return;
   if (window.gtag) return;
 
   window.dataLayer = window.dataLayer ?? [];
