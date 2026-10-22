@@ -31,8 +31,18 @@ serves that production output. The exact dependency graph lives in
 The page fetches `public/data/evidence.json` under Vite's configured base path.
 The repository's publisher generates that file from verified full-scan reports;
 do not hand-edit it to improve a displayed result. No scan runs in the browser.
-There are no uploads, browser credentials, analytics, or application server.
+There are no uploads, browser credentials, or application server. The production
+build can send page views only when `VITE_GA_MEASUREMENT_ID` is explicitly set
+to a Shield-specific public GA4 measurement ID. Analytics is disabled by default
+and in development; do not copy Forge's ID or use an API secret. The Pages build
+does not currently configure a measurement ID.
 Google Fonts supplies the shared OverKill Hill typefaces, with local fallbacks.
+
+The brand assets in `public/` include a 1200×630 PNG social image, a square
+project avatar, browser and Apple icons, a Safari pinned-tab mask, and web app
+icons. The social PNG is suitable for GitHub's repository social-preview upload
+and as a Replit project cover; repository/account settings must be updated
+separately because those settings are not controlled by this GitHub Pages build.
 
 The frontend checks the evidence schema, source consistency, known engines,
 immutable identities, inventory coverage, and finding totals before displaying

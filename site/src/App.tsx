@@ -3,6 +3,7 @@ import { type Engine, type Evidence, evidenceState, formatDate, parseEvidence } 
 import { RELEASED_PIN, starterWorkflow } from './integration';
 import { ForgedShield, Icon } from './icons';
 import SkillSources from './SkillSources';
+import { isAnalyticsConfigured } from './analytics';
 
 const REPOSITORY = 'https://github.com/OKHP3/skillz-shield';
 const FORGE = 'https://okhp3.github.io/skillz/';
@@ -182,7 +183,7 @@ function GuidancePage() {
 }
 
 function Footer() {
-  return <footer className="site-footer"><div className="container"><div className="footer-main"><a className="footer-wordmark" href={pagePath()}><Icon name="shield" />Skillz Shield</a><p>An open-source project from <a href="https://overkillhill.com/">OverKill Hill P³™</a>.</p><div className="footer-links"><a href={pagePath('guidance')}>Skill guidance</a><a href={REPOSITORY}>GitHub</a><a href={`${REPOSITORY}/blob/main/SECURITY.md`}>Security</a><a href={`${REPOSITORY}/blob/main/LICENSE`}>MIT license</a></div></div><div className="footer-bottom"><p>Built with Vite, React, TypeScript &amp; Tailwind CSS. Hosted on GitHub Pages.</p><p>Cisco and NVIDIA retain their own licenses. No vendor endorsement implied.</p></div></div></footer>;
+  return <footer className="site-footer"><div className="container"><div className="footer-main"><a className="footer-wordmark" href={pagePath()}><Icon name="shield" />Skillz Shield</a><p>An open-source project from <a href="https://overkillhill.com/">OverKill Hill P³™</a>.</p><div className="footer-links"><a href={pagePath('guidance')}>Skill guidance</a><a href={REPOSITORY}>GitHub</a><a href={`${REPOSITORY}/blob/main/SECURITY.md`}>Security</a><a href={`${REPOSITORY}/blob/main/LICENSE`}>MIT license</a></div></div><div className="footer-bottom"><p>Built with Vite, React, TypeScript &amp; Tailwind CSS. Hosted on GitHub Pages.</p>{import.meta.env.PROD && isAnalyticsConfigured(import.meta.env.VITE_GA_MEASUREMENT_ID) && <p>Site visits use Google Analytics; see <a href="https://policies.google.com/privacy">Google’s privacy policy</a>.</p>}<p>Cisco and NVIDIA retain their own licenses. No vendor endorsement implied.</p></div></div></footer>;
 }
 
 export default function App() {
