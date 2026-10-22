@@ -58,6 +58,14 @@ class LocationTests(unittest.TestCase):
         self.assertEqual(len(output["locations"]), 1)
         self.assertEqual(output["locations"][0]["rule_id"], "P1")
 
+    def test_no_findings_and_malformed_vendor_records_do_not_create_evidence(self):
+        self.normalized["findings"] = []
+        self.assertEqual(locations.diagnostics("nvidia", self.report(), self.normalized, self.files)["locations"], [])
+        for report in ({"issues": None}, {"issues": [None, [], {"id": [], "severity": []}]}, {}):
+            self.assertEqual(locations.diagnostics("nvidia", report, self.normalized, self.files)["locations"], [])
+        # An adapter rejecting the report cannot grant any source binding.
+        self.assertEqual(locations.diagnostics("nvidia", None, {"coverage": {}}, self.files)["locations"], [])
+
 
 if __name__ == "__main__":
     unittest.main()
