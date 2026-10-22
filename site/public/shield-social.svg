@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
+  <title id="title">Skillz Shield — Find what doesn’t hold.</title>
+  <desc id="description">Independent static security analysis for Agent Skills, from Cisco and NVIDIA, with reviewable evidence.</desc>
+  <defs>
+    <linearGradient id="ground" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#211d1a"/>
+      <stop offset=".55" stop-color="#2a2320"/>
+      <stop offset="1" stop-color="#172b27"/>
+    </linearGradient>
+    <linearGradient id="brass" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#f0bc64"/>
+      <stop offset="1" stop-color="#cf7838"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#f6f2ee" stroke-opacity=".045"/>
+      <circle cx="0" cy="0" r="1.3" fill="#f6f2ee" fill-opacity=".14"/>
+    </pattern>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="20" stdDeviation="18" flood-color="#090a08" flood-opacity=".42"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#ground)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <path d="M0 0h1200v10H0z" fill="url(#brass)"/>
+  <path d="M800 0h400v630H800z" fill="#1c3a34" opacity=".48"/>
+  <path d="M791 0v630" stroke="#e6a03c" stroke-opacity=".62"/>
+  <path d="M0 557h1200" stroke="#f6f2ee" stroke-opacity=".15"/>
+  <g fill="#40b7a1" opacity=".7">
+    <circle cx="842" cy="110" r="2"/><circle cx="1154" cy="205" r="2"/>
+    <circle cx="893" cy="470" r="2"/><circle cx="1086" cy="526" r="2"/>
+  </g>
+  <g font-family="DejaVu Sans, sans-serif">
+    <text x="82" y="90" fill="#55c3aa" font-size="15" font-weight="700" letter-spacing="3">OVERKILL HILL P³™  /  SECURITY EVIDENCE</text>
+    <text x="79" y="211" fill="#f6f2ee" font-size="75" font-weight="700" letter-spacing="-3">SKILLZ</text>
+    <text x="79" y="298" fill="#f6f2ee" font-size="75" font-weight="700" letter-spacing="-3">SHIELD</text>
+    <path d="M82 332h76" stroke="url(#brass)" stroke-width="5"/>
+    <text x="81" y="389" fill="#f4bd64" font-size="29" font-weight="700">Find what doesn’t hold.</text>
+    <text x="82" y="433" fill="#ded5ca" font-size="19">Independent static analysis for Agent Skills.</text>
+    <text x="82" y="463" fill="#ded5ca" font-size="19">Focused scans. Inspectable evidence.</text>
+    <text x="82" y="594" fill="#bcae9c" font-size="13" font-weight="600" letter-spacing="2">CISCO SKILL SCANNER</text>
+    <text x="373" y="594" fill="#bcae9c" font-size="13" font-weight="600" letter-spacing="2">NVIDIA SKILLSPECTOR</text>
+    <text x="826" y="592" fill="#c3b6a5" font-size="12" font-weight="600" letter-spacing="2">INSPECTION / 01</text>
+  </g>
+  <g filter="url(#shadow)">
+    <path d="m989 112 126 47v96c0 87-63 144-126 180-63-36-126-93-126-180v-96Z" fill="#142c27" stroke="url(#brass)" stroke-width="8"/>
+    <path d="M989 112v323" stroke="#f6f2ee" stroke-opacity=".12" stroke-width="2"/>
+    <path d="m1015 191-78 121h61l-35 80 105-150h-68Z" fill="#f6f2ee"/>
+    <circle cx="1080" cy="159" r="6" fill="#40b7a1"/>
+  </g>
+  <circle cx="989" cy="278" r="205" fill="none" stroke="#f6f2ee" stroke-opacity=".12"/>
+  <circle cx="989" cy="278" r="231" fill="none" stroke="#e6a03c" stroke-opacity=".16" stroke-dasharray="2 12"/>
+</svg>
