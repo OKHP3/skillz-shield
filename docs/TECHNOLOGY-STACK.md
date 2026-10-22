@@ -9,6 +9,15 @@ platform binaries. Its [JSON companion](technology/technology-versions.json) ret
 the source URL, observation time, scope and location for each entry. These are
 source declarations and historical evidence, not an installed-software attestation.
 
+Reconciliation update (2026-10-22): the tables and linked snapshots below retain
+the original audit baseline. The current `.replit` now selects `nodejs-24`,
+replacing the Node 20 declaration, and defines a local site preview workflow.
+Current package pins are in `site/package-lock.json`; scheduled freshness reports
+compare those committed pins with upstream releases. The site also supports an
+optional vendor-hosted GA4 script with no immutable package version. It remains
+disabled unless a Shield-specific `VITE_GA_MEASUREMENT_ID` is explicitly supplied
+for a production build.
+
 ## Primary technologies
 
 | Technology | In-place declaration | Stable release checked | Adoption route |
@@ -40,8 +49,7 @@ versions are rejected. Newer is a review candidate, not proof of compatibility.
 | HTML, CSS, SVG, DOM, Fetch, localStorage, Clipboard, matchMedia | Browser-native site markup, styles, icons and APIs; no separately pinned version | Living/module standards; validate supported browsers rather than inventing a single CSS or DOM version |
 | JSON | Reports, evidence and configuration; npm lockfile schema 3; public evidence schema 1 | Repository schemas are contracts, not upstream packages |
 | YAML | Composite Action, workflows and Dependabot schema 2 | GitHub's managed parser; no local PyYAML dependency |
-| TOML / Nix configuration | `.replit`: python-3.12, nodejs-24, web; channel stable-25_05 | [NixOS 26.05](https://nixos.org/blog/announcements/2026/nixos-2605/) is upstream stable, not proof Replit supports an equivalent channel. [Replit configuration](https://docs.replit.com/references/project-setup/configuration) requires platform-specific selection. |
-| Optional Google Analytics | GA4 hosted script; no immutable package version; disabled unless a Shield-specific `VITE_GA_MEASUREMENT_ID` is configured for production | Vendor-managed hosted service; no automatic package upgrade applies. |
+| TOML / Nix configuration | `.replit`: python-3.12, nodejs-20, web; channel stable-25_05 | [NixOS 26.05](https://nixos.org/blog/announcements/2026/nixos-2605/) is upstream stable, not proof Replit supports an equivalent channel. [Replit configuration](https://docs.replit.com/references/project-setup/configuration) requires platform-specific selection. |
 | Markdown / GitHub Flavored Markdown | Documentation and committed skill input | GitHub-managed rendering; no Markdown engine dependency |
 | Git | Source-tree discovery/staging; CI runner-provided | [2.55.0 upstream](https://git-scm.com/); actual runner version must be recorded per run |
 | Bash | Composite Action shell and workflow shell steps; runner-provided | [5.3 stable series](https://lists.nongnu.org/archive/html/bash-announce/2025-07/msg00000.html); distribution patch level is runner-managed |
