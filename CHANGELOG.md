@@ -5,6 +5,12 @@ pins; release tags identify reviewed milestones and are not moved.
 
 ## Unreleased
 
+- Reconcile the unpublished Replit site work with current dependencies and scanner
+  fixes while retaining both commit histories. Add page-specific sharing metadata,
+  icons, social artwork, sitemap, and a Node 24 Replit preview workflow.
+- Keep analytics disabled unless a Shield-specific measurement ID is explicitly
+  configured for a production build; do not reuse the Forge property.
+
 - Preserve six additional public NVIDIA v2.12.0 ledger reason codes in sanitized
   coverage diagnostics. Incomplete verdicts, findings, fatal errors, and
   redaction of arbitrary vendor text remain unchanged.

@@ -48,13 +48,14 @@ test('all published pages have unique SEO and share metadata with a valid canoni
   }
 });
 
-test('all static entry pages initialize the same valid GA4 property', () => {
+test('analytics requires explicit production configuration without a copied property', () => {
   const analytics = readFileSync(new URL('src/analytics.ts', SITE), 'utf8');
   const main = readFileSync(new URL('src/main.tsx', SITE), 'utf8');
-  assert.match(analytics, /G-VJ1BKXS27H/);
-  assert.match(analytics, /gtag\('config', GA_MEASUREMENT_ID\)/);
+  assert.doesNotMatch(analytics, /G-VJ1BKXS27H/);
+  assert.match(analytics, /gtag\('config', measurementId\)/);
   assert.match(analytics, /googletagmanager\.com\/gtag\/js/);
-  assert.match(main, /initializeAnalytics\(\)/);
+  assert.match(main, /import\.meta\.env\.PROD/);
+  assert.match(main, /initializeAnalytics\(import\.meta\.env\.VITE_GA_MEASUREMENT_ID\)/);
 });
 
 test('robots and sitemap enumerate the public GitHub Pages routes', () => {

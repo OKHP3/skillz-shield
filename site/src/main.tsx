@@ -4,6 +4,6 @@ import { initializeAnalytics } from './analytics';
 import App from './App';
 import './styles.css';
 
-initializeAnalytics();
+if (import.meta.env.PROD) initializeAnalytics(import.meta.env.VITE_GA_MEASUREMENT_ID);
 
 createRoot(document.getElementById('root')!).render(<StrictMode><App /></StrictMode>);

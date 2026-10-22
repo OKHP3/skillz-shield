@@ -32,8 +32,10 @@ The page fetches `public/data/evidence.json` under Vite's configured base path.
 The repository's publisher generates that file from verified full-scan reports;
 do not hand-edit it to improve a displayed result. No scan runs in the browser.
 There are no uploads, browser credentials, or application server. The production
-build sends page views from each of the five static entry pages to the public GA4
-measurement ID in `src/analytics.ts`; do not replace it with an API secret.
+build can send page views only when `VITE_GA_MEASUREMENT_ID` is explicitly set
+to a Shield-specific public GA4 measurement ID. Analytics is disabled by default
+and in development; do not copy Forge's ID or use an API secret. The Pages build
+does not currently configure a measurement ID.
 Google Fonts supplies the shared OverKill Hill typefaces, with local fallbacks.
 
 The brand assets in `public/` include a 1200×630 PNG social image, a square
